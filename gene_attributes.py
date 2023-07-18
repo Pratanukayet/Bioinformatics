@@ -56,7 +56,7 @@ def extract_gene_attributes(gtf_file, gene_id_file, output_file):
 
 # Example usage
 gtf_file = 'input.gtf'
-gene_id_file = 'input_ids.txt'
+gene_id_file = 'input_gene_ids.txt'
 output_file = 'output_file.txt'
 
 extract_gene_attributes(gtf_file, gene_id_file, output_file)
