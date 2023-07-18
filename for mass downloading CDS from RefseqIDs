@@ -1,0 +1,41 @@
+import urllib.request
+
+def download_cds_sequences_from_file(input_file, output_file):
+    base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+    
+    try:
+        # Read the input file containing RefSeq IDs
+        with open(input_file, "r") as file:
+            refseq_ids = file.read().splitlines()
+        
+        with open(output_file, "w") as out_file:
+            for refseq_id in refseq_ids:
+                try:
+                    # Construct the request URL
+                    url = f"{base_url}?db=nuccore&id={refseq_id}&rettype=fasta_cds_na"
+
+                    # Send GET request to the NCBI E-utilities
+                    response = urllib.request.urlopen(url)
+
+                    # Read the response and decode it as a string
+                    cds_sequence = response.read().decode("utf-8")
+
+                    # Write the CDS sequence to the output file
+                    out_file.write(cds_sequence)
+                    
+                    print(f"CDS sequence for {refseq_id} downloaded and added to the output file.")
+                except urllib.error.HTTPError as e:
+                    print(f"Failed to retrieve the CDS sequence for {refseq_id}. HTTPError: {str(e)}")
+                except urllib.error.URLError as e:
+                    print(f"Failed to retrieve the CDS sequence for {refseq_id}. URLError: {str(e)}")
+                except Exception as e:
+                    print(f"An error occurred for {refseq_id}: {str(e)}")
+
+        print(f"Downloaded CDS sequences for all RefSeq IDs and saved to {output_file}.")
+    except IOError as e:
+        print(f"Error reading the input file: {str(e)}")
+
+# Example usage
+input_file = "inpt_IDs.txt"  # input file name
+output_file = "output_CDS.fasta"  # output file name
+download_cds_sequences_from_file(input_file, output_file)
